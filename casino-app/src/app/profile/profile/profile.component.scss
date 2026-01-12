@@ -1,0 +1,379 @@
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 3rem;
+
+  h1 {
+    font-size: 3rem;
+    color: #0f4c75;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .welcome {
+    font-size: 1.2rem;
+    color: #666;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    display: inline-block;
+  }
+}
+
+.profile-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #0f4c75;
+}
+
+.info-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e9ecef;
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  h3 {
+    color: #0f4c75;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  .stat-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+
+      &.credits {
+        color: #ffd700;
+      }
+
+      &.win {
+        color: #28a745;
+      }
+
+      &.loss {
+        color: #dc3545;
+      }
+    }
+  }
+}
+
+.games-stats {
+  .game-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateX(5px);
+      background: #e9ecef;
+    }
+
+    .game-name {
+      font-weight: bold;
+      color: #0f4c75;
+    }
+
+    .game-count {
+      color: #666;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.credit-controls {
+  .credit-input {
+    margin-bottom: 1rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #0f4c75;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #0f4c75;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+
+      &:focus {
+        outline: none;
+        border-color: #3282b8;
+      }
+    }
+  }
+
+  .add-credits-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #0f4c75;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 1rem;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .credit-note {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+  }
+}
+
+.transactions-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #3282b8;
+  max-height: 600px;
+  overflow-y: auto;
+
+  h3 {
+    color: #0f4c75;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    position: sticky;
+    top: 0;
+    background: white;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+  }
+}
+
+.transactions-list {
+  .transaction-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #0f4c75;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateX(5px);
+      background: #e9ecef;
+    }
+
+    &.win {
+      border-left-color: #28a745;
+    }
+
+    &.loss {
+      border-left-color: #dc3545;
+    }
+
+    &.draw {
+      border-left-color: #6c757d;
+    }
+
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+
+      .game-type {
+        font-weight: bold;
+        color: #0f4c75;
+      }
+
+      .transaction-date {
+        font-size: 0.8rem;
+        color: #666;
+      }
+    }
+
+    .transaction-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+
+      .bet {
+        color: #666;
+      }
+
+      .result {
+        font-weight: bold;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+
+        &.win {
+          background: rgba(40, 167, 69, 0.1);
+          color: #28a745;
+        }
+
+        &.loss {
+          background: rgba(220, 53, 69, 0.1);
+          color: #dc3545;
+        }
+      }
+
+      .amount {
+        font-weight: bold;
+        font-size: 1.1rem;
+
+        &.positive {
+          color: #28a745;
+        }
+
+        &:not(.positive) {
+          color: #dc3545;
+        }
+      }
+    }
+  }
+}
+
+.no-transactions {
+  text-align: center;
+  padding: 3rem 1rem;
+
+  p {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .play-button {
+    background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.auth-prompt {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px dashed #0f4c75;
+  max-width: 600px;
+  margin: 0 auto;
+
+  h3 {
+    color: #0f4c75;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+
+  button {
+    background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Scrollbar styling
+.transactions-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.transactions-card::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.transactions-card::-webkit-scrollbar-thumb {
+  background: #0f4c75;
+  border-radius: 4px;
+}
+
+.transactions-card::-webkit-scrollbar-thumb:hover {
+  background: #3282b8;
+}

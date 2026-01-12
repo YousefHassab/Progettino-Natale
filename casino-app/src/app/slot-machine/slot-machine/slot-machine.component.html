@@ -1,0 +1,83 @@
+<div class="slot-machine-container">
+  <div class="game-header">
+    <h1>🎰 Slot Machine</h1>
+    <div class="game-info">
+      <p>Punta e gira! 3 simboli uguali = VINCITA!</p>
+      <div class="user-stats" *ngIf="userData">
+        <span>Crediti: {{ userData.credits | currency:'EUR':'symbol':'1.0-0' }}</span>
+        <span>Partite giocate: {{ userData.gamesPlayed?.slotMachine || 0 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div class="slot-machine">
+      <div class="reels-container">
+        <div class="reel" [class.spinning]="isSpinning">
+          <div class="symbol">{{ reels[0] || '?' }}</div>
+        </div>
+        <div class="reel" [class.spinning]="isSpinning">
+          <div class="symbol">{{ reels[1] || '?' }}</div>
+        </div>
+        <div class="reel" [class.spinning]="isSpinning">
+          <div class="symbol">{{ reels[2] || '?' }}</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="bet-controls">
+          <label for="betAmount">Puntata:</label>
+          <div class="bet-buttons">
+            <button *ngFor="let amount of betAmounts" 
+                    [class.active]="betAmount === amount"
+                    (click)="setBetAmount(amount)">
+              {{ amount | currency:'EUR':'symbol':'1.0-0' }}
+            </button>
+          </div>
+          <div class="current-bet">
+            Puntata attuale: <strong>{{ betAmount | currency:'EUR':'symbol':'1.0-0' }}</strong>
+          </div>
+        </div>
+
+        <button class="spin-button" 
+                (click)="spin()" 
+                [disabled]="!canSpin()">
+          {{ isSpinning ? 'GIRA...' : 'GIRA!' }}
+        </button>
+
+        <div class="game-message" *ngIf="lastResult">
+          <p [class.win]="lastResult.winAmount > 0" [class.loss]="lastResult.winAmount === 0">
+            {{ lastResult.message }}
+          </p>
+          <p class="win-amount" *ngIf="lastResult.winAmount > 0">
+            +{{ lastResult.winAmount | currency:'EUR':'symbol':'1.0-0' }}!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-rules">
+      <h3>Regole del Gioco</h3>
+      <ul>
+        <li>💎 3 simboli uguali = x10 la puntata</li>
+        <li>⭐ 3 stelle = x50 la puntata</li>
+        <li>7️⃣ 3 settimane = JACKPOT! x100 la puntata</li>
+        <li>🎯 2 simboli uguali = x2 la puntata</li>
+        <li>🎲 Puntata minima: {{ minBet | currency:'EUR':'symbol':'1.0-0' }}</li>
+      </ul>
+      <div class="payout-info">
+        <h4>🎯 Vincite:</h4>
+        <p>Jackpot (7-7-7): x100</p>
+        <p>3 stelle: x50</p>
+        <p>3 simboli uguali: x10</p>
+        <p>2 simboli uguali: x2</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-prompt" *ngIf="!user">
+    <h3>Accedi per giocare!</h3>
+    <p>Devi essere registrato per giocare alle slot machine</p>
+    <button routerLink="/home">Vai alla Home</button>
+  </div>
+</div>

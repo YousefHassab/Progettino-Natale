@@ -1,0 +1,59 @@
+<div class="app-container">
+  <header class="app-header">
+    <div class="header-left">
+      <h1>🎰 Casino Online</h1>
+      <nav class="main-nav">
+        <a routerLink="/home" routerLinkActive="active">Home</a>
+        <a routerLink="/slot-machine" routerLinkActive="active">Slot Machine</a>
+        <a routerLink="/blackjack" routerLinkActive="active">Blackjack</a>
+        <a routerLink="/roulette" routerLinkActive="active">Roulette</a>
+      </nav>
+    </div>
+    
+    <div class="header-right">
+      <div class="user-info" *ngIf="user">
+        <span class="welcome">Benvenuto, {{ userData?.displayName || user.email }}</span>
+        <div class="credits-display">
+          <span class="credits-icon">💰</span>
+          <span class="credits-amount">{{ userCredits | currency:'EUR':'symbol':'1.0-0' }}</span>
+        </div>
+        <a routerLink="/profile" class="profile-link">Profilo</a>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+      <div class="auth-buttons" *ngIf="!user">
+        <button class="login-btn" (click)="showLogin = true">Login</button>
+        <button class="register-btn" (click)="showRegister = true">Registrati</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="app-footer">
+    <p>© 2023 Casino Online - Gioca responsabilmente. Tutti i crediti sono virtuali.</p>
+    <p class="warning">Questo è un gioco demo. Non coinvolge denaro reale.</p>
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" *ngIf="showLogin || showRegister">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>{{ showLogin ? 'Login' : 'Registrazione' }}</h2>
+        <button class="close-btn" (click)="showLogin = false; showRegister = false">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Questa è una demo. L'autenticazione completa sarà implementata successivamente.</p>
+        <p>Per testare l'applicazione, puoi usare:</p>
+        <ul>
+          <li>Email: demo@casino.it</li>
+          <li>Password: demo123</li>
+        </ul>
+        <button class="demo-btn" (click)="showLogin = false; showRegister = false">
+          Chiudi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

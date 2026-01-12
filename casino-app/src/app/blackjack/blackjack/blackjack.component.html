@@ -1,0 +1,136 @@
+<div class="blackjack-container">
+  <div class="game-header">
+    <h1>♠️ Blackjack</h1>
+    <div class="game-info">
+      <p>Sfida il banco! Avvicinati a 21 senza sballare!</p>
+      <div class="user-stats" *ngIf="userData">
+        <span>Crediti: {{ userData.credits | currency:'EUR':'symbol':'1.0-0' }}</span>
+        <span>Vittorie: {{ userData.totalWins || 0 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div class="table">
+      <!-- Area del banco -->
+      <div class="dealer-area">
+        <h3>
+          🃏 Banco 
+          <span *ngIf="dealerPlaying">(giocando...)</span>
+        </h3>
+        <div class="cards">
+          <div *ngFor="let card of dealerCards; let i = index" 
+               class="card" 
+               [class.hidden]="!gameOver && !dealerPlaying && i > 0"
+               [attr.data-value]="getCardDisplay(card)">
+            {{ getCardDisplay(card) }}
+          </div>
+          <div *ngIf="!gameStarted" class="card hidden"></div>
+        </div>
+        <div class="score" *ngIf="dealerTotal > 0">
+          Totale: {{ dealerTotal }}
+        </div>
+      </div>
+
+      <!-- Area del giocatore -->
+      <div class="player-area">
+        <h3>👤 Tu</h3>
+        <div class="cards">
+          <div *ngFor="let card of playerCards" 
+               class="card"
+               [attr.data-value]="getCardDisplay(card)">
+            {{ getCardDisplay(card) }}
+          </div>
+        </div>
+        <div class="score" *ngIf="playerTotal > 0">
+          Totale: {{ playerTotal }}
+          <span *ngIf="playerTotal > 21" class="bust">SBALLATO!</span>
+          <span *ngIf="playerTotal === 21" class="blackjack">BLACKJACK!</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="bet-controls" *ngIf="!gameStarted">
+        <label for="betAmount">Scegli la tua puntata:</label>
+        <div class="bet-buttons">
+          <button *ngFor="let amount of betAmounts" 
+                  [class.active]="betAmount === amount"
+                  (click)="setBetAmount(amount)">
+            {{ amount | currency:'EUR':'symbol':'1.0-0' }}
+          </button>
+        </div>
+        <div class="current-bet">
+          Puntata: <strong>{{ betAmount | currency:'EUR':'symbol':'1.0-0' }}</strong>
+        </div>
+      </div>
+
+      <div class="game-controls">
+        <button *ngIf="!gameStarted" 
+                class="start-button"
+                (click)="startGame()"
+                [disabled]="!canStartGame()">
+          INIZIA PARTITA
+        </button>
+
+        <div *ngIf="gameStarted && !gameOver && !dealerPlaying" class="player-actions">
+          <button class="action-button hit" (click)="hit()">
+            HIT 👆 (Pesca)
+          </button>
+          <button class="action-button stand" (click)="stand()">
+            STAND ✋ (Stai)
+          </button>
+        </div>
+
+        <button *ngIf="gameOver" 
+                class="play-again-button"
+                (click)="resetGame()">
+          GIOCA ANCORA
+        </button>
+      </div>
+
+      <div class="game-result" *ngIf="gameResult">
+        <h3 [class.win]="gameResult === 'win'" 
+            [class.loss]="gameResult === 'loss'"
+            [class.draw]="gameResult === 'draw'">
+          {{ getResultMessage() }}
+        </h3>
+        <p *ngIf="winAmount > 0" class="win-amount">
+          +{{ winAmount | currency:'EUR':'symbol':'1.0-0' }}!
+        </p>
+        <div class="result-details">
+          <p>Il banco: {{ dealerTotal }} | Tu: {{ playerTotal }}</p>
+          <p *ngIf="gameResult === 'win' && playerCards.length === 2 && playerTotal === 21">
+            🎉 Blackjack Naturale! Pagamento 3:2
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-rules">
+      <h3>📜 Regole del Blackjack</h3>
+      <ul>
+        <li>L'obiettivo è avvicinarsi a 21 senza superarlo</li>
+        <li>Le carte valgono il loro valore numerico</li>
+        <li>Le figure valgono 10 punti</li>
+        <li>L'asso può valere 1 o 11 punti</li>
+        <li>Blackjack (21 con 2 carte) paga 3:2</li>
+        <li>Vinci se il tuo totale è maggiore di quello del banco</li>
+        <li>Se sballi, perdi immediatamente</li>
+        <li>Il banco deve pescare fino a 17</li>
+      </ul>
+      <div class="payouts">
+        <h4>🎯 Vincite:</h4>
+        <p>Vittoria normale: x2 la puntata</p>
+        <p>Blackjack: x2.5 la puntata</p>
+        <p>Pareggio: restituzione puntata</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-prompt" *ngIf="!user">
+    <h3>Accedi per giocare!</h3>
+    <p>Devi essere registrato per giocare a Blackjack</p>
+    <button routerLink="/home">Vai alla Home</button>
+  </div>
+</div>

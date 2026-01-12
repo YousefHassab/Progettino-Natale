@@ -1,0 +1,111 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>👤 Il Tuo Profilo</h1>
+    <p class="welcome" *ngIf="userData">Benvenuto, {{ userData.displayName || userData.email }}</p>
+  </div>
+
+  <div class="profile-content" *ngIf="userData">
+    <div class="profile-card">
+      <div class="profile-info">
+        <div class="info-section">
+          <h3>📊 Statistiche</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Crediti Attuali</span>
+              <span class="stat-value credits">{{ userData.credits | currency:'EUR':'symbol':'1.0-0' }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Partite Totali</span>
+              <span class="stat-value">{{ getTotalGames() }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Vittorie</span>
+              <span class="stat-value win">{{ userData.totalWins || 0 }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Perdite</span>
+              <span class="stat-value loss">{{ userData.totalLosses || 0 }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>🎮 Giochi Giocati</h3>
+          <div class="games-stats">
+            <div class="game-stat">
+              <span class="game-name">Slot Machine</span>
+              <span class="game-count">{{ userData.gamesPlayed?.slotMachine || 0 }} partite</span>
+            </div>
+            <div class="game-stat">
+              <span class="game-name">Blackjack</span>
+              <span class="game-count">{{ userData.gamesPlayed?.blackjack || 0 }} partite</span>
+            </div>
+            <div class="game-stat">
+              <span class="game-name">Roulette</span>
+              <span class="game-count">{{ userData.gamesPlayed?.roulette || 0 }} partite</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>💰 Gestione Crediti</h3>
+          <div class="credit-controls">
+            <div class="credit-input">
+              <label for="creditAmount">Importo da aggiungere:</label>
+              <input type="number" 
+                     id="creditAmount" 
+                     [value]="creditAmount"
+                     (input)="updateCreditAmount($event)"
+                     min="100" 
+                     max="10000"
+                     placeholder="Inserisci importo">
+            </div>
+            <button class="add-credits-btn" 
+                    (click)="addCredits()"
+                    [disabled]="!creditAmount || creditAmount < 100">
+              + Aggiungi {{ creditAmount || 0 | currency:'EUR':'symbol':'1.0-0' }}
+            </button>
+            <p class="credit-note">Nota: I crediti sono virtuali e servono solo per il gioco demo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transactions-card">
+      <h3>📈 Ultime Transazioni</h3>
+      <div class="transactions-list" *ngIf="transactions.length > 0; else noTransactions">
+        <div *ngFor="let transaction of transactions" 
+             class="transaction-item"
+             [class.win]="transaction.result === 'win'"
+             [class.loss]="transaction.result === 'loss'"
+             [class.draw]="transaction.result === 'draw'">
+          <div class="transaction-header">
+            <span class="game-type">{{ getGameName(transaction.gameType) }}</span>
+            <span class="transaction-date">{{ transaction.timestamp | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="transaction-details">
+            <span class="bet">Puntata: {{ transaction.betAmount | currency:'EUR':'symbol':'1.0-0' }}</span>
+            <span class="result" [class.win]="transaction.result === 'win'">
+              {{ getResultText(transaction) }}
+            </span>
+            <span class="amount" [class.positive]="transaction.winAmount > 0">
+              {{ transaction.winAmount > 0 ? '+' : '' }}{{ transaction.winAmount | currency:'EUR':'symbol':'1.0-0' }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noTransactions>
+        <div class="no-transactions">
+          <p>Nessuna transazione disponibile. Inizia a giocare!</p>
+          <button routerLink="/home" class="play-button">Inizia a Giocare</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="auth-prompt" *ngIf="!user">
+    <h3>Accedi per vedere il tuo profilo!</h3>
+    <p>Devi essere registrato per accedere a questa pagina</p>
+    <button routerLink="/home">Vai alla Home</button>
+  </div>
+</div>

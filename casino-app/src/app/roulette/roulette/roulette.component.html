@@ -1,0 +1,155 @@
+<div class="roulette-container">
+  <div class="game-header">
+    <h1>🎲 Roulette</h1>
+    <div class="game-info">
+      <p>Scommetti sui numeri e guarda la pallina rotolare!</p>
+      <div class="user-stats" *ngIf="userData">
+        <span>Crediti: {{ userData.credits | currency:'EUR':'symbol':'1.0-0' }}</span>
+        <span>Ultimo numero: {{ lastNumber !== null ? lastNumber : '--' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div class="roulette-main">
+      <!-- Tavolo da roulette -->
+      <div class="roulette-table">
+        <div class="table-header">
+          <div class="zero">0</div>
+          <div class="third">3rd 12</div>
+          <div class="third">2nd 12</div>
+          <div class="third">1st 12</div>
+        </div>
+        
+        <div class="numbers-grid">
+          <!-- Numeri 1-36 -->
+          <div *ngFor="let number of numbers" 
+               class="number-cell"
+               [class.red]="isRed(number)"
+               [class.black]="isBlack(number)"
+               [class.selected]="selectedBet === 'number' && selectedValue === number"
+               (click)="placeNumberBet(number)">
+            {{ number }}
+          </div>
+          
+          <!-- Scommesse esterne -->
+          <div class="outside-bets">
+            <div class="bet-section">
+              <div class="bet-option" 
+                   [class.selected]="selectedBet === '1-18'"
+                   (click)="placeOutsideBet('1-18')">1-18</div>
+              <div class="bet-option even" 
+                   [class.selected]="selectedBet === 'even'"
+                   (click)="placeOutsideBet('even')">EVEN</div>
+              <div class="bet-option red-bet" 
+                   [class.selected]="selectedBet === 'red'"
+                   (click)="placeOutsideBet('red')">🔴</div>
+              <div class="bet-option black-bet" 
+                   [class.selected]="selectedBet === 'black'"
+                   (click)="placeOutsideBet('black')">⚫</div>
+              <div class="bet-option odd" 
+                   [class.selected]="selectedBet === 'odd'"
+                   (click)="placeOutsideBet('odd')">ODD</div>
+              <div class="bet-option" 
+                   [class.selected]="selectedBet === '19-36'"
+                   (click)="placeOutsideBet('19-36')">19-36</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ruota della roulette -->
+      <div class="roulette-wheel-container">
+        <div class="wheel" [class.spinning]="isSpinning">
+          <div class="wheel-inner">
+            <div *ngFor="let number of wheelNumbers; let i = index" 
+                 class="wheel-number"
+                 [class.red]="isRed(number)"
+                 [class.black]="isBlack(number)"
+                 [class.green]="number === 0"
+                 [style.transform]="'rotate(' + (i * 9.73) + 'deg)'">
+              {{ number }}
+            </div>
+          </div>
+          <div class="ball-indicator" [style.transform]="'rotate(' + ballPosition + 'deg)'">●</div>
+        </div>
+        
+        <div class="winning-number" *ngIf="winningNumber !== null">
+          <div class="winning-display" [class.red]="isRed(winningNumber)" [class.black]="isBlack(winningNumber)" [class.green]="winningNumber === 0">
+            {{ winningNumber }}
+          </div>
+          <p>Numero vincente!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-controls">
+      <div class="bet-controls">
+        <h3>💶 Controlli di Puntata</h3>
+        
+        <div class="bet-amount">
+          <label>Importo puntata:</label>
+          <div class="amount-buttons">
+            <button *ngFor="let amount of betAmounts" 
+                    [class.active]="betAmount === amount"
+                    (click)="setBetAmount(amount)">
+              {{ amount | currency:'EUR':'symbol':'1.0-0' }}
+            </button>
+          </div>
+          <div class="current-bet">
+            Puntata attuale: <strong>{{ betAmount | currency:'EUR':'symbol':'1.0-0' }}</strong>
+          </div>
+        </div>
+
+        <div class="current-selection" *ngIf="selectedBet">
+          <p>
+            Scommessa: <strong>{{ getBetTypeName() }}</strong>
+            <span *ngIf="selectedValue !== null"> su {{ selectedValue }}</span>
+          </p>
+          <p>Potenziale vincita: <strong>{{ getPotentialWin() | currency:'EUR':'symbol':'1.0-0' }}</strong></p>
+        </div>
+
+        <button class="spin-button" 
+                (click)="spin()" 
+                [disabled]="!canSpin() || isSpinning">
+          {{ isSpinning ? 'ROTOLAMENTO...' : 'GIOCA!' }}
+        </button>
+
+        <div class="game-result" *ngIf="lastResult">
+          <h3 [class.win]="lastResult.winAmount > 0" [class.loss]="lastResult.winAmount === 0">
+            {{ lastResult.winAmount > 0 ? 'HAI VINTO! 🎉' : 'HAI PERSO 😔' }}
+          </h3>
+          <p *ngIf="lastResult.winAmount > 0" class="win-amount">
+            +{{ lastResult.winAmount | currency:'EUR':'symbol':'1.0-0' }}!
+          </p>
+          <p>Numero vincente: <strong>{{ lastResult.winningNumber }}</strong> ({{ lastResult.winningColor === 'red' ? '🔴 Rosso' : lastResult.winningColor === 'black' ? '⚫ Nero' : '🟢 Verde' }})</p>
+        </div>
+      </div>
+
+      <div class="game-rules">
+        <h3>📜 Regole della Roulette</h3>
+        <ul>
+          <li>Scegli un numero (1-36) o una combinazione</li>
+          <li>Numero singolo: paga 35 a 1</li>
+          <li>Rosso/Nero, Pari/Dispari, 1-18/19-36: pagano 2 a 1</li>
+          <li>Lo 0 (zero) è verde e paga 35 a 1</li>
+          <li>Se esce lo 0, perdono tutte le scommesse tranne quelle sullo 0</li>
+        </ul>
+        
+        <div class="payouts">
+          <h4>🎯 Quote di Pagamento:</h4>
+          <p>Numero singolo: x35</p>
+          <p>Rosso/Nero: x2</p>
+          <p>Pari/Dispari: x2</p>
+          <p>1-18/19-36: x2</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-prompt" *ngIf="!user">
+    <h3>Accedi per giocare!</h3>
+    <p>Devi essere registrato per giocare alla Roulette</p>
+    <button routerLink="/home">Vai alla Home</button>
+  </div>
+</div>
