@@ -73,41 +73,54 @@ export class GameService {
     return userTransactions;
   }
 
-  // Logica per la slot machine
+  // LOGICA AGGIORNATA PER SLOT MACHINE 4x5
   spinSlotMachine(bet: number): { symbols: string[], winAmount: number, winType: string } {
     const symbols = ['🍒', '🍋', '🍊', '⭐', '🔔', '7️⃣'];
-    const result = [
-      symbols[Math.floor(Math.random() * symbols.length)],
-      symbols[Math.floor(Math.random() * symbols.length)],
+    
+    // Genera 20 simboli (4 righe x 5 colonne)
+    const resultSymbols = Array.from({ length: 20 }, () => 
       symbols[Math.floor(Math.random() * symbols.length)]
-    ];
+    );
 
-    let winAmount = 0;
+    let totalWin = 0;
     let winType = 'nessuna vincita';
 
-    // Controlla le vincite
-    if (result[0] === result[1] && result[1] === result[2]) {
-      // Tre simboli uguali - JACKPOT
-      if (result[0] === '7️⃣') {
-        winAmount = bet * 100; // Jackpot 7-7-7
-        winType = 'JACKPOT!';
-      } else if (result[0] === '⭐') {
-        winAmount = bet * 50;
-        winType = 'Tre stelle!';
-      } else {
-        winAmount = bet * 10;
-        winType = 'Tre simboli uguali!';
+    // Definiamo le 4 linee orizzontali (ognuna da 5 simboli)
+    const paylines = [
+      [0, 1, 2, 3, 4],    // Riga 1
+      [5, 6, 7, 8, 9],    // Riga 2
+      [10, 11, 12, 13, 14], // Riga 3
+      [15, 16, 17, 18, 19]  // Riga 4
+    ];
+
+    paylines.forEach(line => {
+      const s1 = resultSymbols[line[0]];
+      const s2 = resultSymbols[line[1]];
+      const s3 = resultSymbols[line[2]];
+
+      // Controlla se i primi 3 simboli della riga sono uguali (simile alla logica originale)
+      if (s1 === s2 && s2 === s3) {
+        if (s1 === '7️⃣') {
+          totalWin += bet * 50; // Jackpot ridotto leggermente per compensare le 4 righe
+          winType = 'JACKPOT 777!';
+        } else if (s1 === '⭐') {
+          totalWin += bet * 25;
+          winType = 'Tre stelle!';
+        } else {
+          totalWin += bet * 5;
+          winType = 'Tre simboli uguali!';
+        }
+      } else if (s1 === s2 || s2 === s3 || s1 === s3) {
+        // Due simboli uguali nella riga
+        totalWin += bet * 1; 
+        if (winType === 'nessuna vincita') winType = 'Due simboli uguali!';
       }
-    } else if (result[0] === result[1] || result[1] === result[2] || result[0] === result[2]) {
-      // Due simboli uguali
-      winAmount = bet * 2;
-      winType = 'Due simboli uguali!';
-    }
+    });
 
     return {
-      symbols: result,
-      winAmount,
-      winType
+      symbols: resultSymbols,
+      winAmount: totalWin,
+      winType: totalWin > 0 ? winType : 'nessuna vincita'
     };
   }
 

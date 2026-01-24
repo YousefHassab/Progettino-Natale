@@ -102,5 +102,8 @@
       }
     }
   },
-  "defaultProject": "casino-app"
+  "defaultProject": "casino-app",
+  "cli": {
+    "analytics": false
+  }
 }
