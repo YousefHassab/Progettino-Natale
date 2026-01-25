@@ -1,127 +1,50 @@
-<div class="home-container">
-  <div class="hero-section">
-    <h1>Benvenuto al Casino Online! 🎰</h1>
-    <p class="subtitle">Divertiti con i nostri giochi e vinci fantastici premi</p>
+<div class="casino-vault">
+  <div class="gold-bar"></div>
+  
+  <header class="casino-nav">
+    <div class="logo-area">
+      <span class="diamond">💎</span>
+      <h1>DIAMOND <span>CASINÒ</span></h1>
+    </div>
     
-    <div class="balance-card" *ngIf="user">
-      <div class="balance-info">
-        <h3>Il tuo saldo</h3>
-        <p class="balance-amount">{{ userCredits | currency:'EUR':'symbol':'1.0-0' }}</p>
+    <div class="user-hub" *ngIf="user">
+      <div class="balance-pill">
+        <span class="label">CREDITO DISPONIBILE</span>
+        <span class="value">{{currentBalance | number:'1.0-0'}}€</span>
       </div>
-      <button class="add-credits-btn" (click)="addCredits()">+ Aggiungi 500 Crediti</button>
-      <button class="logout-btn" (click)="logout()">Logout</button>
+      <button class="btn-exit" (click)="logout()">LOGOUT</button>
+    </div>
+  </header>
+
+  <main class="lobby-grid">
+    <!-- Scheda Blackjack -->
+    <div class="game-item bj" (click)="goTo('blackjack')">
+      <div class="game-info">
+        <div class="game-tag">POPULARE</div>
+        <h2>BLACKJACK</h2>
+        <p>Tavoli VIP 21+3</p>
+        <button class="enter-btn">ENTRA</button>
+      </div>
     </div>
 
-    <div class="auth-section" *ngIf="!user">
-      <div class="auth-options">
-        <div class="demo-login">
-          <h3>🔓 Login Rapido Demo</h3>
-          <p>Prova l'applicazione senza registrazione!</p>
-          <button class="demo-login-btn" (click)="demoLogin()">
-            ACCEDI COME DEMO
-          </button>
-          <p class="demo-credentials">
-            Email: demo@casino.it | Password: demo123
-          </p>
-          <div *ngIf="loginMessage" class="auth-message" [class.success]="loginSuccess" [class.error]="!loginSuccess">
-            {{ loginMessage }}
-          </div>
-        </div>
-
-        <div class="auth-buttons">
-          <button class="auth-btn login-btn" (click)="showLogin()">
-            Login Manuale
-          </button>
-          <button class="auth-btn register-btn" (click)="showRegister()">
-            Registrati
-          </button>
-        </div>
-      </div>
-
-      <!-- Login Form -->
-      <div class="auth-form" *ngIf="showLoginForm">
-        <h3>🔐 Login Manuale</h3>
-        <div class="form-group">
-          <label for="loginEmail">Email:</label>
-          <input type="email" id="loginEmail" [(ngModel)]="loginEmail" placeholder="tua@email.it">
-        </div>
-        <div class="form-group">
-          <label for="loginPassword">Password:</label>
-          <input type="password" id="loginPassword" [(ngModel)]="loginPassword" placeholder="Password">
-        </div>
-        <button class="submit-btn" (click)="login()">Accedi</button>
-        <div *ngIf="loginMessage" class="auth-message" [class.success]="loginSuccess" [class.error]="!loginSuccess">
-          {{ loginMessage }}
-        </div>
-        <p class="form-note">Non hai un account? <a (click)="showRegister()" class="switch-link">Registrati qui</a></p>
-      </div>
-
-      <!-- Register Form -->
-      <div class="auth-form" *ngIf="showRegisterForm">
-        <h3>📝 Registrazione Nuovo Account</h3>
-        <div class="form-group">
-          <label for="registerName">Nome:</label>
-          <input type="text" id="registerName" [(ngModel)]="registerName" placeholder="Il tuo nome">
-        </div>
-        <div class="form-group">
-          <label for="registerEmail">Email:</label>
-          <input type="email" id="registerEmail" [(ngModel)]="registerEmail" placeholder="tua@email.it">
-        </div>
-        <div class="form-group">
-          <label for="registerPassword">Password (min 6 caratteri):</label>
-          <input type="password" id="registerPassword" [(ngModel)]="registerPassword" placeholder="Password">
-        </div>
-        <button class="submit-btn" (click)="register()">Registrati</button>
-        <div *ngIf="registerMessage" class="auth-message" [class.success]="registerSuccess" [class.error]="!registerSuccess">
-          {{ registerMessage }}
-        </div>
-        <p class="form-note">Hai già un account? <a (click)="showLogin()" class="switch-link">Accedi qui</a></p>
+    <!-- Scheda Roulette -->
+    <div class="game-item rl" (click)="goTo('roulette')">
+      <div class="game-info">
+        <div class="game-tag">CLASSICO</div>
+        <h2>ROULETTE</h2>
+        <p>European Royal Table</p>
+        <button class="enter-btn">ENTRA</button>
       </div>
     </div>
-  </div>
 
-  <div class="games-section">
-    <h2>I Nostri Giochi</h2>
-    
-    <div class="games-grid">
-      <div class="game-card" routerLink="/slot-machine">
-        <div class="game-icon">🎰</div>
-        <h3>Slot Machine</h3>
-        <p>Gira la ruota della fortuna e vinci il jackpot!</p>
-        <button class="play-btn" [disabled]="!user">GIOCA ORA</button>
-        <p *ngIf="!user" class="login-required">🔒 Accedi per giocare</p>
-      </div>
-
-      <div class="game-card" routerLink="/blackjack">
-        <div class="game-icon">♠️</div>
-        <h3>Blackjack</h3>
-        <p>Sfida il banco e avvicinati a 21 senza sballare!</p>
-        <button class="play-btn" [disabled]="!user">GIOCA ORA</button>
-        <p *ngIf="!user" class="login-required">🔒 Accedi per giocare</p>
-      </div>
-
-      <div class="game-card" routerLink="/roulette">
-        <div class="game-icon">🎲</div>
-        <h3>Roulette</h3>
-        <p>Scommetti sui numeri e guarda la pallina rotolare!</p>
-        <button class="play-btn" [disabled]="!user">GIOCA ORA</button>
-        <p *ngIf="!user" class="login-required">🔒 Accedi per giocare</p>
+    <!-- Scheda Slot -->
+    <div class="game-item sl" (click)="goTo('slot-machine')">
+      <div class="game-info">
+        <div class="game-tag">JACKPOT</div>
+        <h2>SLOT SUPREME</h2>
+        <p>Vinci fino a x100</p>
+        <button class="enter-btn">ENTRA</button>
       </div>
     </div>
-  </div>
-
-  <div class="info-section">
-    <div class="info-card">
-      <h3>💰 Sistema di Crediti</h3>
-      <p>Ogni utente riceve crediti virtuali all'iscrizione. Puoi ricaricarli e usarli per giocare.</p>
-    </div>
-    <div class="info-card">
-      <h3>🏆 Classifica</h3>
-      <p>Salì in classifica sfidando altri giocatori e vincendo grandi premi!</p>
-    </div>
-    <div class="info-card">
-      <h3>🔒 Sicuro e Divertente</h3>
-      <p>Gioco responsabile con crediti virtuali. Divertiti senza rischi!</p>
-    </div>
-  </div>
+  </main>
 </div>

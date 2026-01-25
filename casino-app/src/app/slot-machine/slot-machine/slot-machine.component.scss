@@ -1,69 +1,49 @@
 .slot-machine-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 2rem;
+}
+
+.game-header {
   text-align: center;
+  margin-bottom: 3rem;
+  h1 { font-size: 3rem; color: #0f4c75; margin-bottom: 1rem; }
+  .game-info {
+    background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+    color: white; padding: 1rem 2rem; border-radius: 15px; display: inline-block;
+  }
 }
 
-.reels-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); // 5 COLONNE
-  grid-template-rows: repeat(4, 1fr);    // 4 RIGHE
-  gap: 10px;
-  background: #1a1a1a;
-  padding: 20px;
-  border-radius: 15px;
-  border: 4px solid gold;
-  margin-bottom: 30px;
-}
-
-.reel-cell {
+.slot-machine {
   background: white;
-  height: 80px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #0f4c75;
 
-  &.spinning {
-    animation: blur 0.1s infinite;
+  .reels-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #1b262c 0%, #0f4c75 100%);
+    border-radius: 15px;
+    min-height: 200px;
+    align-items: center;
+  }
+
+  .reel {
+    width: 100px; height: 100px; background: white; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 3rem;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    &.spinning { animation: spin 0.1s linear infinite; }
+  }
+
+  .spin-button {
+    width: 100%; padding: 1.5rem; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #0f4c75; border: none; border-radius: 15px; font-size: 1.5rem; font-weight: bold;
   }
 }
 
-.bet-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-
-  button {
-    padding: 10px 20px;
-    border: 2px solid #0f4c75;
-    background: white;
-    cursor: pointer;
-    border-radius: 5px;
-    &.active { background: #0f4c75; color: white; }
-  }
-}
-
-.spin-button {
-  width: 100%;
-  max-width: 300px;
-  padding: 20px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  background: gold;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  &:disabled { opacity: 0.5; }
-}
-
-.win { color: #28a745; font-weight: bold; }
-
-@keyframes blur {
-  0% { filter: blur(0px); transform: translateY(-2px); }
-  100% { filter: blur(2px); transform: translateY(2px); }
-}
+@keyframes spin { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(360deg); } }
