@@ -6,20 +6,15 @@
   position: relative;
 }
 
-/* Header */
 .top-hud {
-  position: absolute; top: 0; width: 100%;
-  padding: 15px 30px;
+  position: absolute; top: 0; width: 100%; padding: 15px 30px;
   display: flex; justify-content: space-between; align-items: center;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-  z-index: 10;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); z-index: 10;
 }
 .balance-display { font-size: 1.5rem; color: #2ecc71; text-shadow: 0 0 10px #2ecc71; }
 
-/* GRIGLIA FLUTTUANTE 4x5 */
 .game-container {
-  display: flex; gap: 10px;
-  padding: 20px;
+  display: flex; gap: 10px; padding: 20px;
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 215, 0, 0.3);
   border-radius: 20px;
@@ -29,8 +24,8 @@
 
 .reels-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 Colonne */
-  grid-template-rows: repeat(4, 1fr);    /* 4 Righe */
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   gap: 8px;
 }
 
@@ -42,43 +37,50 @@
   font-size: 3.5rem;
   transition: transform 0.2s, filter 0.2s;
   border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
 }
+.blur { filter: blur(5px); transform: translateY(-10px); opacity: 0.7; }
 
-/* Animazione Spin */
-.blur {
-  filter: blur(5px);
-  transform: translateY(-10px);
-  opacity: 0.7;
-}
-
-/* Vittoria */
 .win-msg {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  font-size: 4rem; color: #f1c40f;
-  text-shadow: 0 0 20px #e67e22, 0 0 40px #d35400;
-  z-index: 100;
+  font-size: 4rem; color: #f1c40f; text-shadow: 0 0 20px #e67e22; z-index: 100;
   animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 @keyframes zoomIn { from { transform: translate(-50%, -50%) scale(0); } to { transform: translate(-50%, -50%) scale(1); } }
 
-/* CONTROLLI IN BASSO */
+/* BARRA DI CONTROLLO CON SELETTORE PUNTATA */
 .bottom-bar {
   margin-top: 30px;
-  display: flex; align-items: center; gap: 30px;
+  display: flex; align-items: center; gap: 40px;
 }
-.bet-panel { text-align: center; color: #ccc; }
-.bet-val { font-size: 1.2rem; color: white; }
+
+/* Selettore Puntate */
+.bet-selector {
+  display: flex; gap: 10px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 20px; border: 1px solid #444;
+}
+.bet-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #777;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: 0.2s;
+}
+.bet-btn:hover { background: rgba(255,255,255,0.1); }
+.bet-btn.active {
+  background: gold; color: black; border-color: gold; box-shadow: 0 0 15px gold; font-weight: bold; transform: scale(1.1);
+}
 
 .spin-button {
-  width: 90px; height: 90px;
-  border-radius: 50%;
+  width: 100px; height: 100px; border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #2ecc71, #27ae60);
   border: 5px solid rgba(255,255,255,0.2);
   box-shadow: 0 0 20px #2ecc71;
   display: flex; justify-content: center; align-items: center;
-  cursor: pointer;
-  transition: transform 0.1s;
+  cursor: pointer; transition: transform 0.1s;
 }
 .spin-button:active { transform: scale(0.9); }
-.spin-icon { font-size: 2rem; }
+.spin-icon { font-size: 2.5rem; color: white; }
+
+.win-panel { text-align: center; width: 120px; }
+.win-val { font-size: 1.5rem; color: gold; text-shadow: 0 0 5px orange; }

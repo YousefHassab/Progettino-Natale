@@ -9,14 +9,18 @@ import { Router } from '@angular/router';
 })
 export class SlotMachineComponent implements OnInit {
   balance: number = 0;
-  bet = 20; // Puntata fissa per 20 caselle
+  
+  // OPZIONI DI PUNTATA: 20, 50, 100
+  betOptions = [20, 50, 100];
+  bet = 20; // Puntata selezionata di default
+  
   spinning = false;
   message = '';
   winAmount = 0;
 
   // Simboli e Griglia 4 righe x 5 colonne
   symbols = ['💎', '👑', '🍉', '🍇', '🍋', '🍒', '🔔', '7️⃣'];
-  grid: string[] = []; // Array piatto di 20 elementi (4x5)
+  grid: string[] = [];
 
   constructor(private auth: AuthService, private router: Router) {}
 
@@ -25,27 +29,34 @@ export class SlotMachineComponent implements OnInit {
     this.resetGrid();
   }
 
+  // Funzione per cambiare la puntata
+  setBet(amount: number) {
+    if (this.spinning) return; // Non cambiare mentre gira
+    this.bet = amount;
+    this.message = `Puntata impostata a ${amount}€`;
+  }
+
   resetGrid() {
-    // Riempi la griglia con simboli a caso all'avvio
     this.grid = Array(20).fill('❓');
   }
 
   spin() {
-    if (this.balance < this.bet) { alert("Saldo insufficiente!"); return; }
+    if (this.balance < this.bet) { 
+      this.message = "Saldo insufficiente!"; 
+      return; 
+    }
     
     this.balance -= this.bet;
     this.spinning = true;
-    this.message = "GIRA...";
+    this.message = "BUONA FORTUNA!";
     this.winAmount = 0;
 
-    // Animazione di caricamento
     let spins = 0;
     const interval = setInterval(() => {
-      // Effetto visivo: cambia simboli velocemente
       this.grid = this.grid.map(() => this.getRandomSymbol());
       spins++;
       
-      if (spins > 15) { // Dopo un po' ferma
+      if (spins > 15) {
         clearInterval(interval);
         this.finalizeSpin();
       }
@@ -54,7 +65,6 @@ export class SlotMachineComponent implements OnInit {
 
   finalizeSpin() {
     this.spinning = false;
-    // Genera la griglia finale
     this.grid = this.grid.map(() => this.getRandomSymbol());
     this.checkWin();
   }
@@ -64,7 +74,6 @@ export class SlotMachineComponent implements OnInit {
   }
 
   checkWin() {
-    // Conta quanti simboli uguali ci sono
     const counts: {[key: string]: number} = {};
     for (let s of this.grid) {
       counts[s] = (counts[s] || 0) + 1;
@@ -73,31 +82,34 @@ export class SlotMachineComponent implements OnInit {
     let totalWin = 0;
     let bestSymbol = '';
 
-    // Regola Scatter: 8 o più simboli uguali vincono
+    // Regola Scatter: 8+ simboli vincono
+    // Il moltiplicatore si basa sulla puntata attuale (this.bet)
+    const baseBetMultiplier = this.bet / 20; // 1x per 20€, 2.5x per 50€, 5x per 100€
+
     for (let symbol in counts) {
       if (counts[symbol] >= 8) {
         let multiplier = 1;
         if (counts[symbol] >= 10) multiplier = 2;
         if (counts[symbol] >= 12) multiplier = 5;
         
-        // Simboli rari valgono di più
-        let value = 2; // Frutta base
+        let value = 2; 
         if (symbol === '7️⃣') value = 10;
         if (symbol === '👑') value = 25;
         if (symbol === '💎') value = 50;
 
-        totalWin += (value * multiplier);
+        // Formula: Valore Simbolo * Quantità * Moltiplicatore Puntata
+        totalWin += (value * multiplier * baseBetMultiplier);
         bestSymbol = symbol;
       }
     }
 
     if (totalWin > 0) {
-      this.winAmount = totalWin;
-      this.balance += totalWin;
-      this.message = `VITTORIA! ${totalWin}€ con ${bestSymbol}`;
+      this.winAmount = Math.floor(totalWin);
+      this.balance += this.winAmount;
+      this.message = `VITTORIA! ${this.winAmount}€`;
       this.auth.saveBalance(this.balance);
     } else {
-      this.message = "Nessuna fortuna...";
+      this.message = "Riprova...";
       this.auth.saveBalance(this.balance);
     }
   }

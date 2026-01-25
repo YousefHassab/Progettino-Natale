@@ -17,18 +17,31 @@
   </div>
 
   <div class="bottom-bar">
-    <div class="bet-panel">
-      <div>PUNTATA</div>
-      <div class="bet-val">{{bet}}€</div>
+    
+    <!-- SELETTORE PUNTATA -->
+    <div style="text-align:center;">
+      <div style="color:#aaa; font-size:0.8rem; margin-bottom:5px;">SCEGLI PUNTATA</div>
+      <div class="bet-selector">
+        <div *ngFor="let amount of betOptions" 
+             class="bet-btn" 
+             [class.active]="bet === amount"
+             (click)="setBet(amount)">
+             {{ amount }}€
+        </div>
+      </div>
     </div>
 
+    <!-- TASTO SPIN -->
     <div class="spin-button" (click)="spin()">
       <div class="spin-icon">↻</div>
     </div>
 
-    <div class="bet-panel" style="width:100px;">
-      <div>VINCITA</div>
-      <div class="bet-val" style="color:gold">{{winAmount}}€</div>
+    <!-- PANNELLO VINCITA -->
+    <div class="win-panel">
+      <div style="color:#aaa; font-size:0.8rem;">VINCITA</div>
+      <div class="win-val">{{ winAmount }}€</div>
     </div>
   </div>
+  
+  <div style="margin-top:10px; color:#666; font-size:0.9rem;">{{ message }}</div>
 </div>
