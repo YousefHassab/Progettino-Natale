@@ -1,0 +1,31 @@
+<div class="lobby-container">
+  <header>
+    <div class="logo">
+      <h1>🎰 CASINO ROYALE</h1>
+    </div>
+    <div class="user-info">
+      <div class="balance">💰 {{ balance }}€</div>
+      <button class="btn-logout" (click)="logout()">Esci</button>
+    </div>
+  </header>
+
+  <div class="games-grid">
+    <div class="game-card roulette" (click)="nav('roulette')">
+      <h2>🔴⚫</h2>
+      <h3>ROULETTE</h3>
+      <p>Punta sul tuo numero fortunato</p>
+    </div>
+
+    <div class="game-card blackjack" (click)="nav('blackjack')">
+      <h2>🃏</h2>
+      <h3>BLACKJACK</h3>
+      <p>Sfida il banco a fare 21</p>
+    </div>
+
+    <div class="game-card slots" (click)="nav('slot-machine')">
+      <h2>🍒7️⃣🍋</h2>
+      <h3>SLOT MACHINE</h3>
+      <p>Gira la ruota e vinci il jackpot</p>
+    </div>
+  </div>
+</div>

@@ -1,50 +1,58 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from './services/auth.service';
-import { UserService, UserData } from './services/user.service';
-import { Observable } from 'rxjs';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  title = 'casino-app';
-  user: any = null;
-  userData: UserData | null = null;
-  showLogin = false;
-  showRegister = false;
+  currentRoute: string = 'home';
 
-  constructor(
-    private authService: AuthService,
-    private userService: UserService
-  ) {}
+  @HostListener('window:hashchange', [''])
+  hashChangeHandler(event: HashChangeEvent) {
+    console.log('Hash cambiato:', window.location.hash);
+    this.updateRoute();
+  }
+
+  @HostListener('window:load', [''])
+  loadHandler(event: Event) {
+    console.log('Pagina caricata');
+    this.updateRoute();
+  }
 
   ngOnInit() {
-    // Sottoscrizione all'utente autenticato
-    this.authService.currentUser$.subscribe(async (user) => {
-      this.user = user;
-      
-      if (user) {
-        // Carica i dati dell'utente
-        this.userService.getUserData(user.uid).subscribe((data) => {
-          this.userData = data;
-        });
-      } else {
-        this.userData = null;
-      }
+    console.log('AppComponent inizializzato');
+    this.updateRoute();
+    
+    // Logga gli hash changes per debugging
+    window.addEventListener('hashchange', (e) => {
+      console.log('HashChangeEvent:', e.oldURL, '→', e.newURL);
     });
   }
 
-  get userCredits(): number {
-    return this.userData?.credits || 0;
-  }
-
-  async logout() {
-    try {
-      await this.authService.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
+  updateRoute() {
+    const hash = window.location.hash.replace('#', '');
+    console.log('Hash corrente:', hash);
+    
+    switch(hash) {
+      case 'blackjack':
+        this.currentRoute = 'blackjack';
+        break;
+      case 'roulette':
+        this.currentRoute = 'roulette';
+        break;
+      case 'slot-machine':
+        this.currentRoute = 'slot-machine';
+        break;
+      case 'login':
+        this.currentRoute = 'login';
+        break;
+      default:
+        this.currentRoute = 'home';
     }
+    
+    console.log('Route selezionata:', this.currentRoute);
+    
+    // Scrolla in alto quando si cambia route
+    window.scrollTo(0, 0);
   }
 }

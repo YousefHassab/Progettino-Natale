@@ -1,50 +1,10 @@
-<div class="casino-vault">
-  <div class="gold-bar"></div>
+<div style="text-align: center; color: white; padding: 50px;">
+  <h1>BENVENUTO AL CASINO</h1>
+  <p>Scegli il tuo gioco:</p>
   
-  <header class="casino-nav">
-    <div class="logo-area">
-      <span class="diamond">💎</span>
-      <h1>DIAMOND <span>CASINÒ</span></h1>
-    </div>
-    
-    <div class="user-hub" *ngIf="user">
-      <div class="balance-pill">
-        <span class="label">CREDITO DISPONIBILE</span>
-        <span class="value">{{currentBalance | number:'1.0-0'}}€</span>
-      </div>
-      <button class="btn-exit" (click)="logout()">LOGOUT</button>
-    </div>
-  </header>
-
-  <main class="lobby-grid">
-    <!-- Scheda Blackjack -->
-    <div class="game-item bj" (click)="goTo('blackjack')">
-      <div class="game-info">
-        <div class="game-tag">POPULARE</div>
-        <h2>BLACKJACK</h2>
-        <p>Tavoli VIP 21+3</p>
-        <button class="enter-btn">ENTRA</button>
-      </div>
-    </div>
-
-    <!-- Scheda Roulette -->
-    <div class="game-item rl" (click)="goTo('roulette')">
-      <div class="game-info">
-        <div class="game-tag">CLASSICO</div>
-        <h2>ROULETTE</h2>
-        <p>European Royal Table</p>
-        <button class="enter-btn">ENTRA</button>
-      </div>
-    </div>
-
-    <!-- Scheda Slot -->
-    <div class="game-item sl" (click)="goTo('slot-machine')">
-      <div class="game-info">
-        <div class="game-tag">JACKPOT</div>
-        <h2>SLOT SUPREME</h2>
-        <p>Vinci fino a x100</p>
-        <button class="enter-btn">ENTRA</button>
-      </div>
-    </div>
-  </main>
+  <div style="display: flex; justify-content: center; gap: 20px; margin-top: 30px;">
+    <a routerLink="/roulette" style="padding: 20px; background: red; color: white; text-decoration: none; border-radius: 10px;">ROULETTE</a>
+    <a routerLink="/blackjack" style="padding: 20px; background: black; border: 1px solid white; color: white; text-decoration: none; border-radius: 10px;">BLACKJACK</a>
+    <a routerLink="/slot-machine" style="padding: 20px; background: gold; color: black; text-decoration: none; border-radius: 10px;">SLOT MACHINE</a>
+  </div>
 </div>

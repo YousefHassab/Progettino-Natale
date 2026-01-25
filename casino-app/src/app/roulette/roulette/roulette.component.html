@@ -1,155 +1,113 @@
 <div class="roulette-container">
-  <div class="game-header">
-    <h1>🎲 Roulette</h1>
-    <div class="game-info">
-      <p>Scommetti sui numeri e guarda la pallina rotolare!</p>
-      <div class="user-stats" *ngIf="userData">
-        <span>Crediti: {{ userData.credits | currency:'EUR':'symbol':'1.0-0' }}</span>
-        <span>Ultimo numero: {{ lastNumber !== null ? lastNumber : '--' }}</span>
-      </div>
+  
+  <!-- Header -->
+  <div class="hud-bar">
+    <button (click)="goHome()" style="background:transparent; border:1px solid #fff; color:white; padding:5px 15px; cursor:pointer;">ESCI</button>
+    <div style="font-size:1.2rem;">SALDO: <span style="color:gold">{{ balance }}€</span></div>
+  </div>
+
+  <!-- Ruota -->
+  <div class="wheel-area">
+    <div class="wheel-graphic" [class.spinning]="isSpinning"></div>
+    <div class="ball" [class.ball-spin]="isSpinning"></div>
+    
+    <!-- Numero Vincente -->
+    <div class="result-hub">
+      <span *ngIf="!isSpinning && lastNumber !== null" [style.color]="checkRed(lastNumber) ? 'red' : 'black'">
+        {{ lastNumber }}
+      </span>
     </div>
   </div>
 
-  <div class="game-area">
-    <div class="roulette-main">
-      <!-- Tavolo da roulette -->
-      <div class="roulette-table">
-        <div class="table-header">
-          <div class="zero">0</div>
-          <div class="third">3rd 12</div>
-          <div class="third">2nd 12</div>
-          <div class="third">1st 12</div>
-        </div>
-        
-        <div class="numbers-grid">
-          <!-- Numeri 1-36 -->
-          <div *ngFor="let number of numbers" 
-               class="number-cell"
-               [class.red]="isRed(number)"
-               [class.black]="isBlack(number)"
-               [class.selected]="selectedBet === 'number' && selectedValue === number"
-               (click)="placeNumberBet(number)">
-            {{ number }}
-          </div>
-          
-          <!-- Scommesse esterne -->
-          <div class="outside-bets">
-            <div class="bet-section">
-              <div class="bet-option" 
-                   [class.selected]="selectedBet === '1-18'"
-                   (click)="placeOutsideBet('1-18')">1-18</div>
-              <div class="bet-option even" 
-                   [class.selected]="selectedBet === 'even'"
-                   (click)="placeOutsideBet('even')">EVEN</div>
-              <div class="bet-option red-bet" 
-                   [class.selected]="selectedBet === 'red'"
-                   (click)="placeOutsideBet('red')">🔴</div>
-              <div class="bet-option black-bet" 
-                   [class.selected]="selectedBet === 'black'"
-                   (click)="placeOutsideBet('black')">⚫</div>
-              <div class="bet-option odd" 
-                   [class.selected]="selectedBet === 'odd'"
-                   (click)="placeOutsideBet('odd')">ODD</div>
-              <div class="bet-option" 
-                   [class.selected]="selectedBet === '19-36'"
-                   (click)="placeOutsideBet('19-36')">19-36</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ruota della roulette -->
-      <div class="roulette-wheel-container">
-        <div class="wheel" [class.spinning]="isSpinning">
-          <div class="wheel-inner">
-            <div *ngFor="let number of wheelNumbers; let i = index" 
-                 class="wheel-number"
-                 [class.red]="isRed(number)"
-                 [class.black]="isBlack(number)"
-                 [class.green]="number === 0"
-                 [style.transform]="'rotate(' + (i * 9.73) + 'deg)'">
-              {{ number }}
-            </div>
-          </div>
-          <div class="ball-indicator" [style.transform]="'rotate(' + ballPosition + 'deg)'">●</div>
-        </div>
-        
-        <div class="winning-number" *ngIf="winningNumber !== null">
-          <div class="winning-display" [class.red]="isRed(winningNumber)" [class.black]="isBlack(winningNumber)" [class.green]="winningNumber === 0">
-            {{ winningNumber }}
-          </div>
-          <p>Numero vincente!</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="game-controls">
-      <div class="bet-controls">
-        <h3>💶 Controlli di Puntata</h3>
-        
-        <div class="bet-amount">
-          <label>Importo puntata:</label>
-          <div class="amount-buttons">
-            <button *ngFor="let amount of betAmounts" 
-                    [class.active]="betAmount === amount"
-                    (click)="setBetAmount(amount)">
-              {{ amount | currency:'EUR':'symbol':'1.0-0' }}
-            </button>
-          </div>
-          <div class="current-bet">
-            Puntata attuale: <strong>{{ betAmount | currency:'EUR':'symbol':'1.0-0' }}</strong>
-          </div>
-        </div>
-
-        <div class="current-selection" *ngIf="selectedBet">
-          <p>
-            Scommessa: <strong>{{ getBetTypeName() }}</strong>
-            <span *ngIf="selectedValue !== null"> su {{ selectedValue }}</span>
-          </p>
-          <p>Potenziale vincita: <strong>{{ getPotentialWin() | currency:'EUR':'symbol':'1.0-0' }}</strong></p>
-        </div>
-
-        <button class="spin-button" 
-                (click)="spin()" 
-                [disabled]="!canSpin() || isSpinning">
-          {{ isSpinning ? 'ROTOLAMENTO...' : 'GIOCA!' }}
-        </button>
-
-        <div class="game-result" *ngIf="lastResult">
-          <h3 [class.win]="lastResult.winAmount > 0" [class.loss]="lastResult.winAmount === 0">
-            {{ lastResult.winAmount > 0 ? 'HAI VINTO! 🎉' : 'HAI PERSO 😔' }}
-          </h3>
-          <p *ngIf="lastResult.winAmount > 0" class="win-amount">
-            +{{ lastResult.winAmount | currency:'EUR':'symbol':'1.0-0' }}!
-          </p>
-          <p>Numero vincente: <strong>{{ lastResult.winningNumber }}</strong> ({{ lastResult.winningColor === 'red' ? '🔴 Rosso' : lastResult.winningColor === 'black' ? '⚫ Nero' : '🟢 Verde' }})</p>
-        </div>
-      </div>
-
-      <div class="game-rules">
-        <h3>📜 Regole della Roulette</h3>
-        <ul>
-          <li>Scegli un numero (1-36) o una combinazione</li>
-          <li>Numero singolo: paga 35 a 1</li>
-          <li>Rosso/Nero, Pari/Dispari, 1-18/19-36: pagano 2 a 1</li>
-          <li>Lo 0 (zero) è verde e paga 35 a 1</li>
-          <li>Se esce lo 0, perdono tutte le scommesse tranne quelle sullo 0</li>
-        </ul>
-        
-        <div class="payouts">
-          <h4>🎯 Quote di Pagamento:</h4>
-          <p>Numero singolo: x35</p>
-          <p>Rosso/Nero: x2</p>
-          <p>Pari/Dispari: x2</p>
-          <p>1-18/19-36: x2</p>
-        </div>
-      </div>
-    </div>
+  <!-- Messaggio Vincita -->
+  <div *ngIf="lastWin > 0" style="color:gold; font-size:2rem; margin-bottom:10px; text-shadow:0 0 10px red;">
+    HAI VINTO {{ lastWin }}€!
   </div>
 
-  <div class="auth-prompt" *ngIf="!user">
-    <h3>Accedi per giocare!</h3>
-    <p>Devi essere registrato per giocare alla Roulette</p>
-    <button routerLink="/home">Vai alla Home</button>
+  <!-- TAVOLO VERDE -->
+  <div class="betting-board">
+    
+    <!-- PARTE SUPERIORE: Numeri e Zero -->
+    <div class="grid-top">
+      <!-- Zero -->
+      <div class="zero-col">
+        <div class="cell-0" (click)="placeBet('number', 0)">
+          0
+          <div class="chip-stack" *ngIf="getBetAmountOnCell('number', 0) > 0">{{ getBetAmountOnCell('number', 0) }}</div>
+        </div>
+      </div>
+
+      <!-- Griglia 1-36 -->
+      <div class="numbers-grid">
+        <!-- Generiamo le colonne in loop, ma attenzione all'ordine delle righe (3, 2, 1) -->
+        <!-- RIGA 3 (3, 6, 9...) -->
+        <ng-container *ngFor="let n of [3,6,9,12,15,18,21,24,27,30,33,36]">
+          <div class="cell" [class.bg-red]="checkRed(n)" [class.bg-black]="!checkRed(n)" (click)="placeBet('number', n)">
+            {{n}}
+            <div class="chip-stack" *ngIf="getBetAmountOnCell('number', n) > 0">{{ getBetAmountOnCell('number', n) }}</div>
+          </div>
+        </ng-container>
+
+        <!-- RIGA 2 (2, 5, 8...) -->
+        <ng-container *ngFor="let n of [2,5,8,11,14,17,20,23,26,29,32,35]">
+          <div class="cell" [class.bg-red]="checkRed(n)" [class.bg-black]="!checkRed(n)" (click)="placeBet('number', n)">
+            {{n}}
+            <div class="chip-stack" *ngIf="getBetAmountOnCell('number', n) > 0">{{ getBetAmountOnCell('number', n) }}</div>
+          </div>
+        </ng-container>
+
+        <!-- RIGA 1 (1, 4, 7...) -->
+        <ng-container *ngFor="let n of [1,4,7,10,13,16,19,22,25,28,31,34]">
+          <div class="cell" [class.bg-red]="checkRed(n)" [class.bg-black]="!checkRed(n)" (click)="placeBet('number', n)">
+            {{n}}
+            <div class="chip-stack" *ngIf="getBetAmountOnCell('number', n) > 0">{{ getBetAmountOnCell('number', n) }}</div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- PARTE CENTRALE: Dozzine -->
+    <div class="grid-mid">
+      <div></div> <!-- Spazio vuoto sotto lo zero -->
+      <div class="cell-wide" (click)="placeBet('dozen', 1)">
+        1st 12
+        <div class="chip-stack" *ngIf="getBetAmountOnCell('dozen', 1) > 0">{{ getBetAmountOnCell('dozen', 1) }}</div>
+      </div>
+      <div class="cell-wide" (click)="placeBet('dozen', 2)">
+        2nd 12
+        <div class="chip-stack" *ngIf="getBetAmountOnCell('dozen', 2) > 0">{{ getBetAmountOnCell('dozen', 2) }}</div>
+      </div>
+      <div class="cell-wide" (click)="placeBet('dozen', 3)">
+        3rd 12
+        <div class="chip-stack" *ngIf="getBetAmountOnCell('dozen', 3) > 0">{{ getBetAmountOnCell('dozen', 3) }}</div>
+      </div>
+    </div>
+
+    <!-- PARTE BASSA: Chance Semplici -->
+    <div class="grid-bot">
+      <div></div>
+      <div class="cell-wide" (click)="placeBet('half', 'low')">1-18 <div class="chip-stack" *ngIf="getBetAmountOnCell('half', 'low') > 0">{{ getBetAmountOnCell('half', 'low') }}</div></div>
+      <div class="cell-wide" (click)="placeBet('even_odd', 'even')">EVEN <div class="chip-stack" *ngIf="getBetAmountOnCell('even_odd', 'even') > 0">{{ getBetAmountOnCell('even_odd', 'even') }}</div></div>
+      <div class="cell-wide" style="background:#c0392b" (click)="placeBet('color', 'red')">RED <div class="chip-stack" *ngIf="getBetAmountOnCell('color', 'red') > 0">{{ getBetAmountOnCell('color', 'red') }}</div></div>
+      <div class="cell-wide" style="background:#2c3e50" (click)="placeBet('color', 'black')">BLACK <div class="chip-stack" *ngIf="getBetAmountOnCell('color', 'black') > 0">{{ getBetAmountOnCell('color', 'black') }}</div></div>
+      <div class="cell-wide" (click)="placeBet('even_odd', 'odd')">ODD <div class="chip-stack" *ngIf="getBetAmountOnCell('even_odd', 'odd') > 0">{{ getBetAmountOnCell('even_odd', 'odd') }}</div></div>
+      <div class="cell-wide" (click)="placeBet('half', 'high')">19-36 <div class="chip-stack" *ngIf="getBetAmountOnCell('half', 'high') > 0">{{ getBetAmountOnCell('half', 'high') }}</div></div>
+    </div>
+
+  </div>
+
+  <!-- CONTROLLI -->
+  <div class="controls-area">
+    <div class="chip-select c-10" [class.active]="selectedChip===10" (click)="selectChip(10)">10</div>
+    <div class="chip-select c-50" [class.active]="selectedChip===50" (click)="selectChip(50)">50</div>
+    <div class="chip-select c-100" [class.active]="selectedChip===100" (click)="selectChip(100)">100</div>
+
+    <div style="color:#aaa; font-size:0.8rem; margin:0 10px;">
+      TOTALE PUNTATO<br>
+      <strong style="color:white; font-size:1.2rem;">{{ getCurrentTotalBet() }}€</strong>
+    </div>
+
+    <button class="btn-spin" (click)="spin()" [disabled]="isSpinning">GIRA RUOTA</button>
+    <button class="btn-clear" (click)="clearBets()" [disabled]="isSpinning">RESET</button>
   </div>
 </div>

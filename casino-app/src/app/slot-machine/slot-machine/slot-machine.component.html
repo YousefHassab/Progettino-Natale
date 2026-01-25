@@ -1,38 +1,34 @@
-<div class="slot-machine-container">
-  <div class="game-header">
-    <h1>🎰 Slot Machine 4x5</h1>
-    <div class="user-stats" *ngIf="userData">
-      <span>Crediti: {{ userData.credits | currency:'EUR' }}</span>
+<div class="slot-machine">
+  <div class="top-hud">
+    <button (click)="goHome()" style="background:transparent; border:1px solid rgba(255,255,255,0.3); color:white; padding:10px 20px; border-radius:20px; cursor:pointer;">🏠 LOBBY</button>
+    <div class="balance-display">{{ balance | number:'1.0-0' }}€</div>
+  </div>
+
+  <div *ngIf="winAmount > 0" class="win-msg">
+    BIG WIN!<br>+{{winAmount}}€
+  </div>
+
+  <div class="game-container">
+    <div class="reels-grid">
+      <div class="symbol" *ngFor="let s of grid" [class.blur]="spinning">
+        {{ s }}
+      </div>
     </div>
   </div>
 
-  <div class="game-area">
-    <div class="slot-box">
-      <!-- NUOVA GRIGLIA 4x5 -->
-      <div class="reels-grid">
-        <div class="reel-cell" *ngFor="let symbol of reels" [class.spinning]="isSpinning">
-          <div class="symbol">{{ symbol }}</div>
-        </div>
-      </div>
+  <div class="bottom-bar">
+    <div class="bet-panel">
+      <div>PUNTATA</div>
+      <div class="bet-val">{{bet}}€</div>
+    </div>
 
-      <div class="controls">
-        <div class="bet-buttons">
-          <button *ngFor="let amount of betAmounts" 
-                  [class.active]="betAmount === amount"
-                  (click)="setBetAmount(amount)">
-            {{ amount }}€
-          </button>
-        </div>
+    <div class="spin-button" (click)="spin()">
+      <div class="spin-icon">↻</div>
+    </div>
 
-        <button class="spin-button" (click)="spin()" [disabled]="!canSpin()">
-          {{ isSpinning ? 'GIRO...' : 'GIOCA!' }}
-        </button>
-
-        <div class="game-message" *ngIf="lastResult">
-          <p [class.win]="lastResult.winAmount > 0">{{ lastResult.message }}</p>
-          <h2 *ngIf="lastResult.winAmount > 0">+{{ lastResult.winAmount }}€</h2>
-        </div>
-      </div>
+    <div class="bet-panel" style="width:100px;">
+      <div>VINCITA</div>
+      <div class="bet-val" style="color:gold">{{winAmount}}€</div>
     </div>
   </div>
 </div>

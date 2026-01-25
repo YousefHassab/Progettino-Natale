@@ -1,0 +1,42 @@
+<div class="main-container">
+  <!-- Sfondo animato -->
+  <div class="bg-overlay"></div>
+
+  <div class="auth-card">
+    <div class="logo-area">
+      <div class="crown">👑</div>
+      <h1>CASINO ROYALE</h1>
+      <p>VIP CLUB</p>
+    </div>
+
+    <!-- Intestazione che cambia -->
+    <h2 class="form-title">
+      {{ isRegistering ? 'CREA NUOVO ACCOUNT' : 'BENTORNATO' }}
+    </h2>
+
+    <!-- Messaggi di Feedback -->
+    <div class="alert success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="alert error" *ngIf="message">{{ message }}</div>
+
+    <div class="input-group">
+      <span class="icon">✉️</span>
+      <input [(ngModel)]="email" type="email" placeholder="Inserisci la tua Email">
+    </div>
+
+    <div class="input-group">
+      <span class="icon">🔒</span>
+      <input [(ngModel)]="password" type="password" placeholder="Inserisci la Password">
+    </div>
+
+    <button class="btn-primary" (click)="submit()" [disabled]="isLoading">
+      <span *ngIf="!isLoading">{{ isRegistering ? 'REGISTRATI' : 'ACCEDI AL CASINO' }}</span>
+      <span *ngIf="isLoading" class="spinner">↻</span>
+    </button>
+
+    <div class="divider">oppure</div>
+
+    <button class="btn-secondary" (click)="toggleMode()">
+      {{ isRegistering ? 'Torna al Login' : 'Crea un Account' }}
+    </button>
+  </div>
+</div>

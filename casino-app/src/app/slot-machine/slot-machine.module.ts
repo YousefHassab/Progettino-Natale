@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SlotMachineRoutingModule } from './slot-machine-routing.module';
+import { RouterModule } from '@angular/router';
 import { SlotMachineComponent } from './slot-machine/slot-machine.component';
 
 @NgModule({
-  declarations: [
-    SlotMachineComponent
-  ],
+  declarations: [SlotMachineComponent],
   imports: [
     CommonModule,
-    SlotMachineRoutingModule
+    RouterModule.forChild([{ path: '', component: SlotMachineComponent }])
   ]
 })
 export class SlotMachineModule { }

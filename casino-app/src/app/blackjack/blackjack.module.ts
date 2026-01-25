@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BlackjackRoutingModule } from './blackjack-routing.module';
+import { RouterModule } from '@angular/router';
 import { BlackjackComponent } from './blackjack/blackjack.component';
 
 @NgModule({
-  declarations: [
-    BlackjackComponent
-  ],
+  declarations: [BlackjackComponent],
   imports: [
     CommonModule,
-    BlackjackRoutingModule
+    RouterModule.forChild([{ path: '', component: BlackjackComponent }])
   ]
 })
 export class BlackjackModule { }

@@ -1,0 +1,90 @@
+.lobby-container {
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  min-height: 100vh;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 15px;
+  margin-bottom: 40px;
+  border: 1px solid #ffd700;
+}
+
+.logo h1 {
+  margin: 0;
+  color: #ffd700;
+  text-shadow: 0 0 10px #ffd700;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.balance {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2ecc71;
+  background: rgba(0,0,0,0.8);
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+.btn-logout {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.games-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.game-card {
+  background: rgba(255,255,255,0.1);
+  width: 300px;
+  height: 200px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+  border: 2px solid transparent;
+}
+
+.game-card:hover {
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.2);
+  border-color: #ffd700;
+}
+
+.game-card h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.game-card p {
+  color: #ccc;
+}
+
+/* Colori specifici per le card */
+.roulette { border-bottom: 5px solid #e74c3c; }
+.blackjack { border-bottom: 5px solid #3498db; }
+.slots { border-bottom: 5px solid #f1c40f; }

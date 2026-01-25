@@ -1,70 +1,66 @@
-<div class="blackjack-vip-table">
-  <div class="table-border">
-    <button (click)="goBack()" class="btn-leave">⬅ ESCI DAL TAVOLO</button>
+<div class="blackjack-room">
+  <div class="hud">
+    <div style="font-size:0.8rem; color:#aaa;">SALDO</div>
+    <div style="font-size:1.5rem; color:gold;">{{ balance | number:'1.0-0' }}€</div>
+  </div>
+  
+  <button class="btn-exit" (click)="goHome()">ESCI</button>
 
-    <div class="dealer-space">
-      <div class="dealer-hand-info">
-        <span class="label">BANCO</span>
-        <span class="score-badge">{{dealerScore}}</span>
+  <div class="game-table">
+    <div class="table-logo">BLACKJACK PAYS 3 TO 2</div>
+
+    <!-- MESSAGGIO DI FINE PARTITA (OVERLAY) -->
+    <!-- Z-index altissimo per stare sopra a tutto -->
+    <div class="overlay-msg" *ngIf="gameOver" (click)="resetTable()">
+      <div class="msg-box">
+        <h1>{{ message }}</h1>
+        <div class="win-amount" *ngIf="message.includes('VINTO') || message.includes('BLACKJACK')">
+          +{{ message.includes('BLACKJACK') ? bet * 2.5 : bet * 2 }}€
+        </div>
+        <button class="btn-reset" (click)="resetTable()">GIOCA ANCORA</button>
       </div>
-      <div class="cards-display">
-        <div class="playing-card" *ngFor="let card of dealerCards; let i = index" 
-             [attr.data-suit]="card.suit" [class.hidden-card]="!gameOver && !dealerPlaying && i > 0">
-          <div class="card-corner top">
-            <span>{{card.value}}</span>
-            <span>{{card.suit}}</span>
-          </div>
-          <div class="card-center">{{card.suit}}</div>
-          <div class="card-corner bottom">
-            <span>{{card.value}}</span>
-            <span>{{card.suit}}</span>
-          </div>
+    </div>
+
+    <!-- AREA DEALER -->
+    <div class="dealer-area">
+      <div *ngIf="gameStarted" class="score-pill">BANCO: {{ dealerScore }}</div>
+      <div class="hand">
+        <div class="card-visual" *ngFor="let c of dealerHand" 
+             [class.red]="c.suit=='♥'||c.suit=='♦'">
+          <div class="top">{{c.val}}</div>
+          <div class="mid">{{c.suit}}</div>
+          <div class="bot">{{c.val}}</div>
         </div>
       </div>
     </div>
 
-    <div class="table-center">
-      <div class="result-overlay" *ngIf="gameOver">
-        <h1>{{message}}</h1>
-      </div>
-      <div class="bet-circle">
-        <span class="bet-label">PUNTATA</span>
-        <span class="bet-value">{{currentBet}}€</span>
-      </div>
-    </div>
-
-    <div class="player-space">
-      <div class="cards-display">
-        <div class="playing-card" *ngFor="let card of playerCards" [attr.data-suit]="card.suit">
-          <div class="card-corner top">
-            <span>{{card.value}}</span>
-            <span>{{card.suit}}</span>
-          </div>
-          <div class="card-center">{{card.suit}}</div>
-          <div class="card-corner bottom">
-            <span>{{card.value}}</span>
-            <span>{{card.suit}}</span>
-          </div>
+    <!-- AREA PLAYER -->
+    <div class="player-area">
+      <div class="hand">
+        <div class="card-visual" *ngFor="let c of playerHand"
+             [class.red]="c.suit=='♥'||c.suit=='♦'">
+          <div class="top">{{c.val}}</div>
+          <div class="mid">{{c.suit}}</div>
+          <div class="bot">{{c.val}}</div>
         </div>
       </div>
-      <div class="player-hand-info">
-        <span class="label">IL TUO PUNTEGGIO</span>
-        <span class="score-badge" [class.bust]="playerScore > 21">{{playerScore}}</span>
-      </div>
+      <div *ngIf="gameStarted" class="score-pill">TU: {{ playerScore }}</div>
     </div>
   </div>
 
-  <footer class="action-bar">
-    <div class="balance-info">
-      <small>BILANCIO</small>
-      <div class="money">{{balance | number:'1.0-0'}}€</div>
+  <!-- CONTROLLI -->
+  <div class="controls-bar">
+    <div *ngIf="!gameStarted" class="chips-area">
+      <span>PUNTA:</span>
+      <button class="chip c-10" (click)="startGame(10)">10</button>
+      <button class="chip c-50" (click)="startGame(50)">50</button>
+      <button class="chip c-100" (click)="startGame(100)">100</button>
     </div>
 
-    <div class="buttons-group">
-      <button class="btn-vip btn-gold" (click)="startGame()" *ngIf="gameOver">NUOVA MANO</button>
-      <button class="btn-vip" (click)="hit()" [disabled]="gameOver">CARTA</button>
-      <button class="btn-vip" (click)="stand()" [disabled]="gameOver">STAI</button>
-      <button class="btn-vip btn-double" (click)="doubleDown()" [disabled]="gameOver || playerCards.length !== 2">RADDOPPIA</button>
+    <div *ngIf="gameStarted && !gameOver" class="actions-area">
+      <button class="btn-act hit" (click)="hit()">CARTA</button>
+      <button class="btn-act stand" (click)="stand()">STAI</button>
+      <button class="btn-act double" *ngIf="canDouble" (click)="double()">RADDOPPIA</button>
     </div>
-  </footer>
+  </div>
 </div>
